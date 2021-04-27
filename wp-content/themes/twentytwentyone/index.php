@@ -56,7 +56,7 @@ if(!term_exists($name)) {
   }
  }
 //1 
- //insert_category('marque auto');
+ insert_category('marque auto');
 
 //2
 
