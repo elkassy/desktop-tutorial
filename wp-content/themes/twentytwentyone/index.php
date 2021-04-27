@@ -39,7 +39,6 @@ get_footer();*/
 
 
 
-
 function insert_category($name,$parent=null) {
 if(!term_exists($name)) {
     if($parent==null){
@@ -63,24 +62,7 @@ if(!term_exists($name)) {
 //insert_category('serie3','bmw');
 
 $file= get_template_directory().'/categories.csv';
-/*$_marques=[];
-if (($handle = fopen($file, "r")) !== FALSE) {
-  while (($marques = fgetcsv($handle, 1000, ";")) !== FALSE) {
-  
-  	foreach ($marques as $key => $marque) {
-  		if($marque!=''){
-  			$_marques[]=utf8_encode($marque);
-  			
-  		}
 
-  		  
-  			
-
-  	}
-  }
-  fclose($handle);
-}
-var_dump($_marques);*/
 $marques = $fields = array(); $i = 0;
 $handle = @fopen($file, "r");
 if ($handle) {
@@ -90,7 +72,7 @@ if ($handle) {
             continue;
         }
         foreach ($row as $k=>$value) {
-            $marques[$i][$fields[$k]] = $value;
+            $marques[$i][$fields[$k]] = utf8_encode($value);
         }
         $i++;
     }
@@ -99,7 +81,6 @@ if ($handle) {
     }
     fclose($handle);
 }
-
 
 foreach ($marques as $key => $value) {
 	
@@ -110,3 +91,43 @@ foreach ($marques as $key => $value) {
 
 
 }
+
+
+
+
+
+
+foreach ($marques as $key => $value) {
+	
+	$marque = $value['MARQUE'];
+	$modele = $value['MODELE'];
+
+	if(!empty($marque) && !empty($modele)){
+		$title = $marque.' '.$modele;
+		$postdate = date('Y/m/d h:i:s');
+		$post_date_modified = '';
+		$content = "Le Lorem Ipsum est simplement du faux texte employé dans la composition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un imprimeur anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem Ipsum, et, plus récemment, par son inclusion dans des applications de mise en page de texte, comme Aldus PageMaker.";
+		$id_cat = [];
+
+		if(!empty(get_cat_ID($modele))){
+			$id_cat[] = get_cat_ID($modele);
+		}
+
+		$new_post = array(
+		        'post_title'    =>   $title,
+		        'post_date'     =>   $postdate,
+		        'post_modified' =>      $post_date_modified,
+		        'post_status'   =>   'publish',
+		        'post_content'  =>      $content,
+		        'post_type'      =>      'post',
+		        'post_author'   =>   1,
+		        'post_category' => $id_cat,
+		    );
+
+		wp_insert_post( $new_post );
+	}
+
+}
+
+
+
